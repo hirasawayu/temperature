@@ -15,25 +15,25 @@ from linebot.models import (
 
 app = Flask(__name__)
 
-# LINE APIé–¢ä¿‚ã®è¨­å®šå€¤å–å¾—
+# LINE APIŠÖŒW‚Ìİ’è’læ“¾
 YOUR_CHANNEL_ACCESS_TOKEN = os.environ['YOUR_CHANNEL_ACCESS_TOKEN']
 YOUR_CHANNEL_SECRET = os.environ['YOUR_CHANNEL_SECRET']
 
-# Beebotteé–¢ä¿‚ã®è¨­å®šå€¤å–å¾—
+# BeebotteŠÖŒW‚Ìİ’è’læ“¾
 YOUR_BEEBOTTE_TOKEN = os.environ['YOUR_BEEBOTTE_TOKEN']
 
 line_bot_api = LineBotApi(YOUR_CHANNEL_ACCESS_TOKEN)
 handler = WebhookHandler(YOUR_CHANNEL_SECRET)
 
-# å‹•ä½œã‚’èµ·ã“ã™ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã®ãƒªã‚¹ãƒˆ
-show_msg = [s.encode('utf-8') for s in ['show', 'æ°—æ¸©è¡¨ç¤º']]
-change_msg = [s.encode('utf-8') for s in ['change', 'è¨ˆæ¸¬å ´æ‰€å¤‰æ›´']]
+# “®ì‚ğ‹N‚±‚·ƒƒbƒZ[ƒW‚ÌƒŠƒXƒg
+show_msg = [s.encode('utf-8') for s in ['show', '‹C‰·•\¦']]
+change_msg = [s.encode('utf-8') for s in ['change', 'Œv‘ªêŠ•ÏX']]
 
-# LINEã«é€šçŸ¥ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã‚’é€ã‚‹
+# LINE‚É’Ê’mƒƒbƒZ[ƒW‚ğ‘—‚é
 def broadcast_line_msg(msg):
     line_bot_api.broadcast(TextSendMessage(text=msg))
 
-# ã‚¨ã‚¢ã‚³ãƒ³åˆ¶å¾¡ç”¨ã®MQTTã‚’ãƒ‘ãƒ–ãƒªãƒƒã‚·ãƒ¥ã™ã‚‹
+# ƒGƒAƒRƒ“§Œä—p‚ÌMQTT‚ğƒpƒuƒŠƒbƒVƒ…‚·‚é
 def publish_aircon_control_msg(msg):
     publish.single('temperature-show-app', \
                     msg, \
@@ -68,9 +68,9 @@ def handle_message(event):
     elif msg in change_msg:
         publish_aircon_control_msg('change')
     else:
-        broadcast_line_msg('\n'.join(['æ°—æ¸©è¡¨ç¤ºï¼š', \
+        broadcast_line_msg('\n'.join(['‹C‰·•\¦F', \
                                      *['['+s.decode('utf-8')+']' for s in show_msg], \
-                                     '\næ¸¬å®šå ´æ‰€å¤‰æ›´ï¼š', \
+                                     '\n‘ª’èêŠ•ÏXF', \
                                      *['['+s.decode('utf-8')+']' for s in change_msg] , \
                                      ]))
 
