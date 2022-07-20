@@ -17,31 +17,31 @@ from linebot.models import (
 
 app = Flask(__name__)
 
-# LINE APIŠÖŒW‚Ìİ’è’læ“¾
+# LINE APIé–¢ä¿‚ã®è¨­å®šå€¤å–å¾—
 YOUR_CHANNEL_ACCESS_TOKEN = os.environ['YOUR_CHANNEL_ACCESS_TOKEN']
 YOUR_CHANNEL_SECRET = os.environ['YOUR_CHANNEL_SECRET']
 
-# BeebotteŠÖŒW‚Ìİ’è’læ“¾
+# Beebotteé–¢ä¿‚ã®è¨­å®šå€¤å–å¾—
 YOUR_BEEBOTTE_TOKEN = os.environ['YOUR_BEEBOTTE_TOKEN']
 
 line_bot_api = LineBotApi(YOUR_CHANNEL_ACCESS_TOKEN)
 handler = WebhookHandler(YOUR_CHANNEL_SECRET)
 
-# “®ì‚ğ‹N‚±‚·ƒƒbƒZ[ƒW‚ÌƒŠƒXƒg
-on_msg = [s.encode('utf-8') for s in ['on', 'ƒGƒAƒRƒ“‚Â‚¯‚ÄI']]
-off_msg = [s.encode('utf-8') for s in ['off', 'ƒGƒAƒRƒ“Ø‚Á‚ÄI']]
+# å‹•ä½œã‚’èµ·ã“ã™ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã®ãƒªã‚¹ãƒˆ
+show_msg = [s.encode('utf-8') for s in ['show', 'æ°—æ¸©è¡¨ç¤º']]
+change_msg = [s.encode('utf-8') for s in ['change', 'è¨ˆæ¸¬å ´æ‰€å¤‰æ›´']]
 
-# LINE‚É’Ê’mƒƒbƒZ[ƒW‚ğ‘—‚é
+# LINEã«é€šçŸ¥ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã‚’é€ã‚‹
 def broadcast_line_msg(msg):
     line_bot_api.broadcast(TextSendMessage(text=msg))
 
-# ƒGƒAƒRƒ“§Œä—p‚ÌMQTT‚ğƒpƒuƒŠƒbƒVƒ…‚·‚é
+# ã‚¨ã‚¢ã‚³ãƒ³åˆ¶å¾¡ç”¨ã®MQTTã‚’ãƒ‘ãƒ–ãƒªãƒƒã‚·ãƒ¥ã™ã‚‹
 def publish_aircon_control_msg(msg):
-    publish.single('my_home/aircon_control', \
+    publish.single('hirasawayu/show_temperature', \
                     msg, \
                     hostname='mqtt.beebotte.com', \
                     port=8883, \
-                    auth = {'username':'token:{}'.format(YOUR_BEEBOTTE_TOKEN)}, \
+                    auth = {'hirasawayu':'token:{}'.format(YOUR_BEEBOTTE_TOKEN)}, \
                     tls={'ca_certs':'mqtt.beebotte.com.pem'})
 
 @app.route('/callback', methods=['POST'])
@@ -65,19 +65,17 @@ def callback():
 def handle_message(event):
     msg = event.message.text.encode('utf-8')
 
-    if msg in on_msg:
-        publish_aircon_control_msg('on')
-    elif msg in off_msg:
-        publish_aircon_control_msg('off')
+    if msg in show_msg:
+        publish_aircon_control_msg('show')
+    elif msg in change_msg:
+        publish_aircon_control_msg('change')
     else:
-        broadcast_line_msg('\n'.join(['ƒGƒAƒRƒ“‚ğ‚Â‚¯‚½‚¢F', \
-                                     *['['+s.decode('utf-8')+']' for s in on_msg], \
-                                     '\nƒGƒAƒRƒ“‚ğÁ‚µ‚½‚¢F', \
-                                     *['['+s.decode('utf-8')+']' for s in off_msg] , \
-                                     '\n‚Á‚Ä˜b‚µ‚©‚¯‚Ä‚ËI']))
+        broadcast_line_msg('\n'.join(['æ°—æ¸©è¡¨ç¤ºï¼š', \
+                                     *['['+s.decode('utf-8')+']' for s in show_msg], \
+                                     '\næ¸¬å®šå ´æ‰€å¤‰æ›´ï¼š', \
+                                     *['['+s.decode('utf-8')+']' for s in change_msg] , \
+                                     ]))
 
 if __name__ == '__main__':
     port = int(os.getenv('PORT'))
     app.run(host='0.0.0.0', port=port)
-
-
