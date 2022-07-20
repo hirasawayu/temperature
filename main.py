@@ -41,7 +41,7 @@ def publish_aircon_control_msg(msg):
                     msg, \
                     hostname='mqtt.beebotte.com', \
                     port=8883, \
-                    auth = {'hirasawayu':'token:{}'.format(YOUR_BEEBOTTE_TOKEN)}, \
+                    auth = {'username':'token:{}'.format(YOUR_BEEBOTTE_TOKEN)}, \
                     tls={'ca_certs':'mqtt.beebotte.com.pem'})
 
 @app.route('/callback', methods=['POST'])
