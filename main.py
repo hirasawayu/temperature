@@ -1,3 +1,5 @@
+#! /usr/bin/env python
+
 from flask import Flask, request, abort
 import paho.mqtt.publish as publish
 import os
