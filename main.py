@@ -37,7 +37,7 @@ def broadcast_line_msg(msg):
 
 # エアコン制御用のMQTTをパブリッシュする
 def publish_aircon_control_msg(msg):
-    publish.single('temperature-show-app', \
+    publish.single('hirasawayu/show_temperature', \
                     msg, \
                     hostname='mqtt.beebotte.com', \
                     port=8883, \
