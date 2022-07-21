@@ -67,11 +67,11 @@ def change_place():
     broadcast_line_msg('場所を選択してください\n1: 平澤　2:本郷')
     #place = handler.add(MessageEvent, message=TextMessage)
 
-    if place == 1:
-        YOUR_BEEBOTTE_TOKEN = os.environ['YOUR_BEEBOTTE_TOKEN']
-
-    elif place == 2:
-        YOUR_BEEBOTTE_TOKEN = 'token_CdVWquhY2oiFcwHc'
+#    if place == 1:
+#       YOUR_BEEBOTTE_TOKEN = os.environ['YOUR_BEEBOTTE_TOKEN']
+#
+#    elif place == 2:
+#        YOUR_BEEBOTTE_TOKEN = 'token_CdVWquhY2oiFcwHc'
 
 
 
