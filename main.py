@@ -41,7 +41,7 @@ def publish_aircon_control_msg(msg):
                     msg, \
                     hostname='mqtt.beebotte.com', \
                     port=8883, \
-                    auth = {'username':'token:{}'.format(YOUR_BEEBOTTE_TOKEN)}, \
+                    auth = {'hirasawayu':'token:{}'.format(YOUR_BEEBOTTE_TOKEN)}, \
                     tls={'ca_certs':'mqtt.beebotte.com.pem'})
 
 @app.route('/callback', methods=['POST'])
@@ -61,6 +61,17 @@ def callback():
 
     return 'OK'
 
+def change_place():
+    place = input('場所を選択してください\n1: 平澤　2:本郷')
+
+    if place == 1:
+        YOUR_BEEBOTTE_TOKEN = os.environ['YOUR_BEEBOTTE_TOKEN']
+
+    elif place == 2:
+        YOUR_BEEBOTTE_TOKEN = 'token_CdVWquhY2oiFcwHc'
+
+
+
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
     msg = event.message.text.encode('utf-8')
@@ -68,7 +79,7 @@ def handle_message(event):
     if msg in show_msg:
         publish_aircon_control_msg('show')
     elif msg in change_msg:
-        publish_aircon_control_msg('change')
+        change_place()
     else:
         broadcast_line_msg('\n'.join(['気温表示：', \
                                      *['['+s.decode('utf-8')+']' for s in show_msg], \
