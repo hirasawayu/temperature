@@ -1,5 +1,6 @@
 #! /usr/bin/env python
 
+from email.message import Message
 from flask import Flask, request, abort
 import paho.mqtt.publish as publish
 import os
@@ -61,8 +62,10 @@ def callback():
 
     return 'OK'
 
+
 def change_place():
-    place = input('場所を選択してください\n1: 平澤　2:本郷')
+    broadcast_line_msg('場所を選択してください\n1: 平澤　2:本郷')
+    place = handler.add(MessageEvent, message=TextMessage)
 
     if place == 1:
         YOUR_BEEBOTTE_TOKEN = os.environ['YOUR_BEEBOTTE_TOKEN']
