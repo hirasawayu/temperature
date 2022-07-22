@@ -81,8 +81,8 @@ def handle_message(event):
 
     if msg in show_msg:
         publish_aircon_control_msg('show')
-    elif msg in change_msg:
-        change_place()
+    #elif msg in change_msg:
+    #    change_place()
     else:
         broadcast_line_msg('\n'.join(['気温表示：', \
                                      *['['+s.decode('utf-8')+']' for s in show_msg], \
