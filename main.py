@@ -5,7 +5,6 @@ from flask import Flask, request, abort
 import paho.mqtt.publish as publish
 import os
 import json
-
 from linebot import (
     LineBotApi, WebhookHandler
 )
@@ -15,8 +14,16 @@ from linebot.exceptions import (
 from linebot.models import (
     MessageEvent, TextMessage, TextSendMessage,
 )
+import logging
+
+LOGFILE_NAME = "DEBUG.log"
 
 app = Flask(__name__)
+
+app.logger.setLevel(logging.DEBUG)
+log_handler = logging.FileHandler(LOGFILE_NAME)
+log_handler.setLevel(logging.DEBUG)
+app.logger.addHandler(log_handler)
 
 # LINE API関係の設定値取得
 YOUR_CHANNEL_ACCESS_TOKEN = os.environ['YOUR_CHANNEL_ACCESS_TOKEN']
@@ -32,8 +39,10 @@ handler = WebhookHandler(YOUR_CHANNEL_SECRET)
 show_msg = [s.encode('utf-8') for s in ['show', '気温表示']]
 change_msg = [s.encode('utf-8') for s in ['change', '計測場所変更']]
 
+
 # LINEに通知メッセージを送る
 def broadcast_line_msg(msg):
+    app.logger.debug('line-send')
     line_bot_api.broadcast(TextSendMessage(text=msg))
 
 # エアコン制御用のMQTTをパブリッシュする
@@ -44,6 +53,7 @@ def publish_aircon_control_msg(msg):
                     port=8883, \
                     auth = {'username':'token:{}'.format(YOUR_BEEBOTTE_TOKEN)}, \
                     tls={'ca_certs':'mqtt.beebotte.com.pem'})
+
 
 @app.route('/callback', methods=['POST'])
 def callback():
@@ -63,9 +73,10 @@ def callback():
     return 'OK'
 
 
-def change_place():
-    broadcast_line_msg('場所を選択してください\n1: 平澤　2:本郷')
-    #place = handler.add(MessageEvent, message=TextMessage)
+#def change_place():
+#    broadcast_line_msg('場所を選択してください\n1: 平澤　2:本郷')
+#    def switch_place(event):
+#        place = event.message.text.enocde
 
 #    if place == 1:
 #       YOUR_BEEBOTTE_TOKEN = os.environ['YOUR_BEEBOTTE_TOKEN']
@@ -83,7 +94,7 @@ def handle_message(event):
         publish_aircon_control_msg('show')
 
     #elif msg in change_msg:
-    #    change_place()
+    #   change_place()
     else:
         broadcast_line_msg('\n'.join(['気温表示：', \
                                      *['['+s.decode('utf-8')+']' for s in show_msg], \
